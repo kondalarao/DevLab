@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_exp1" default="compile.module.exp1">
+  <dirname property="module.exp1.basedir" file="${ant.file.module_exp1}"/>
+  
+  <property name="module.jdk.home.exp1" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.exp1" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.exp1" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.exp1" value="-encoding UTF-8 -source 1.6 ${compiler.args}"/>
+  
+  <property name="exp1.output.dir" value="${module.exp1.basedir}/out/production/Exp1"/>
+  <property name="exp1.testoutput.dir" value="${module.exp1.basedir}/out/test/Exp1"/>
+  
+  <path id="exp1.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="exp1.module.production.classpath">
+    <path refid="${module.jdk.classpath.exp1}"/>
+  </path>
+  
+  <path id="exp1.runtime.production.module.classpath">
+    <pathelement location="${exp1.output.dir}"/>
+  </path>
+  
+  <path id="exp1.module.classpath">
+    <path refid="${module.jdk.classpath.exp1}"/>
+    <pathelement location="${exp1.output.dir}"/>
+  </path>
+  
+  <path id="exp1.runtime.module.classpath">
+    <pathelement location="${exp1.testoutput.dir}"/>
+    <pathelement location="${exp1.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.exp1">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.exp1">
+    <patternset refid="excluded.from.module.exp1"/>
+  </patternset>
+  
+  <path id="exp1.module.sourcepath">
+    <dirset dir="${module.exp1.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.exp1" depends="compile.module.exp1.production,compile.module.exp1.tests" description="Compile module Exp1"/>
+  
+  <target name="compile.module.exp1.production" description="Compile module Exp1; production classes">
+    <mkdir dir="${exp1.output.dir}"/>
+    <javac destdir="${exp1.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.exp1}/javac">
+      <compilerarg line="${compiler.args.exp1}"/>
+      <bootclasspath refid="exp1.module.bootclasspath"/>
+      <classpath refid="exp1.module.production.classpath"/>
+      <src refid="exp1.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.exp1"/>
+    </javac>
+    
+    <copy todir="${exp1.output.dir}">
+      <fileset dir="${module.exp1.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.exp1.tests" depends="compile.module.exp1.production" description="compile module Exp1; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.exp1" description="cleanup module">
+    <delete dir="${exp1.output.dir}"/>
+    <delete dir="${exp1.testoutput.dir}"/>
+  </target>
+</project>
